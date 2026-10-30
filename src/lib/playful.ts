@@ -39,7 +39,7 @@ export interface Player { nickname: string; emoji: string; color: string }
 const ADJ = ["Blue", "Happy", "Green", "Sunny", "Brave", "Silly", "Sparkly", "Speedy"];
 const ANIMALS: [string, string][] = [["Owl", "🦉"], ["Fox", "🦊"], ["Panda", "🐼"], ["Tiger", "🐯"], ["Frog", "🐸"], ["Bunny", "🐰"], ["Lion", "🦁"], ["Koala", "🐨"]];
 const COLORS = ["var(--sky)", "var(--berry)", "var(--leaf)", "var(--sun)", "var(--primary)"];
-const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
+const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)]!;
 
 export function createPlayer(): Player {
   const [animal, emoji] = pick(ANIMALS);

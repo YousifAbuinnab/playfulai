@@ -132,7 +132,7 @@ function Story({ lesson, player }: { lesson: StoryLesson; player: Player }) {
           <BigButton className="mt-6 w-full" onClick={() => setPhase("quiz")}>I'm ready! →</BigButton>
         </div>
       ) : (
-        <div className="mt-6"><Quiz task={chapter.tasks[taskIdx]} onDone={next} /></div>
+        <div className="mt-6"><Quiz task={chapter.tasks[taskIdx]!} onDone={next} /></div>
       )}
     </div>
   );
@@ -150,7 +150,7 @@ function Game({ lesson, player }: { lesson: GameLesson; player: Player }) {
   if (showFinal) return <Final player={player} stars={total} max={lesson.levels.length * 3} />;
 
   if (active !== null) {
-    const level = lesson.levels[active];
+    const level = lesson.levels[active]!;
     const next = (first: boolean) => {
       const c = correct + (first ? 1 : 0);
       if (taskIdx + 1 < level.tasks.length) { setCorrect(c); setTaskIdx(taskIdx + 1); }
@@ -160,7 +160,7 @@ function Game({ lesson, player }: { lesson: GameLesson; player: Player }) {
       <div className="mt-6">
         <p className="font-display text-lg font-semibold text-primary">Level {active + 1} · Question {taskIdx + 1} of {level.tasks.length}</p>
         <h1 className="mb-6 text-3xl font-bold">{level.title}</h1>
-        <Quiz task={level.tasks[taskIdx]} onDone={next} />
+        <Quiz task={level.tasks[taskIdx]!} onDone={next} />
       </div>
     );
   }
