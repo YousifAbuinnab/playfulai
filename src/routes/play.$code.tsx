@@ -51,19 +51,19 @@ function PlayerPage() {
   );
 }
 
-/** Quiz card: wrong answers shake and allow retry. Reports whether the first try was correct. */
+/** Quiz card: wrong answers shake briefly, then reset for unlimited retries. Reports whether the first try was correct. */
 function Quiz({ task, onDone }: { task: Task; onDone: (firstTry: boolean) => void }) {
-  const [wrong, setWrong] = useState<string[]>([]);
+  const [missed, setMissed] = useState(false);
   const [shaking, setShaking] = useState<string | null>(null);
   const [solved, setSolved] = useState(false);
   const audio = audioUrl(task.prompt_audio);
 
-  useEffect(() => { setWrong([]); setSolved(false); }, [task.id]);
+  useEffect(() => { setMissed(false); setSolved(false); setShaking(null); }, [task.id]);
 
   const pick = (o: string) => {
     if (solved) return;
-    if (o === task.correct_answer) setSolved(true);
-    else { setWrong((w) => [...w, o]); setShaking(o); setTimeout(() => setShaking(null), 450); }
+    if (o === task.correct_answer) { setSolved(true); setShaking(null); }
+    else { setMissed(true); setShaking(o); setTimeout(() => setShaking((s) => (s === o ? null : s)), 800); }
   };
 
   return (
@@ -78,22 +78,20 @@ function Quiz({ task, onDone }: { task: Task; onDone: (firstTry: boolean) => voi
           <button
             key={o}
             onClick={() => pick(o)}
-            disabled={wrong.includes(o)}
             className={cn(
               "h-24 rounded-2xl font-display text-4xl font-bold shadow-pop transition active:translate-y-1 active:shadow-none",
-              solved && o === task.correct_answer ? "animate-pop bg-success text-success-foreground" : wrong.includes(o) ? "bg-muted text-muted-foreground opacity-60" : "bg-sun text-accent-foreground hover:-translate-y-1",
-              shaking === o && "animate-shake bg-destructive text-destructive-foreground",
+              solved && o === task.correct_answer ? "animate-pop bg-success text-success-foreground" : shaking === o ? "animate-shake bg-destructive/25 text-destructive" : "bg-sun text-accent-foreground hover:-translate-y-1",
             )}
           >
             {o}
           </button>
         ))}
       </div>
-      {shaking && <p className="mt-4 text-center text-lg font-semibold text-destructive">Oops! Try again 💪</p>}
+      {shaking && <p className="mt-4 text-center text-lg font-semibold text-destructive">Not quite! Try again! 💪</p>}
       {solved && (
         <div className="animate-pop mt-5 text-center">
           <p className="text-xl font-semibold text-success">🎉 {task.explanation}</p>
-          <BigButton variant="leaf" className="mt-4" onClick={() => onDone(wrong.length === 0)}>Next →</BigButton>
+          <BigButton variant="leaf" className="mt-4" onClick={() => onDone(!missed)}>Next →</BigButton>
         </div>
       )}
     </div>
