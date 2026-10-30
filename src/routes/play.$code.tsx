@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BigButton, Confetti, playAudio, useAutoplay } from "@/components/playful";
 import { audioUrl } from "@/config";
 import type { GameLesson, Lesson, StoryLesson, Task } from "@/data/sampleLesson";
@@ -94,6 +94,64 @@ function Quiz({ task, onDone }: { task: Task; onDone: (firstTry: boolean) => voi
           <BigButton variant="leaf" className="mt-4" onClick={() => onDone(!missed)}>Next →</BigButton>
         </div>
       )}
+    </div>
+  );
+}
+
+const narrationCache = new Map<string, string>();
+
+function tryPlay(url: string): Promise<HTMLAudioElement> {
+  return new Promise((resolve, reject) => {
+    const a = new Audio(url);
+    a.onerror = () => reject(new Error("audio failed"));
+    a.play().then(() => resolve(a), reject);
+  });
+}
+
+/** Plays existing narration audio if it works; otherwise generates it once via ElevenLabs. */
+function NarrationButton({ text, existing }: { text: string; existing: string | null }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [error, setError] = useState("");
+  const busy = useRef(false);
+  const current = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => () => current.current?.pause(), []);
+
+  const play = async () => {
+    if (busy.current || !text) return;
+    busy.current = true;
+    setStatus("loading");
+    setError("");
+    current.current?.pause();
+    try {
+      if (existing) {
+        try { current.current = await tryPlay(existing); setStatus("idle"); return; } catch { /* fall back to generation */ }
+      }
+      let url = narrationCache.get(text);
+      if (!url) {
+        const res = await fetch("/api/tts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text }) });
+        if (!res.ok) {
+          const body = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(body.error ?? `Request failed (${res.status})`);
+        }
+        url = URL.createObjectURL(await res.blob());
+        narrationCache.set(text, url);
+      }
+      current.current = await tryPlay(url);
+      setStatus("idle");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not play narration");
+      setStatus("error");
+    } finally {
+      busy.current = false;
+    }
+  };
+
+  return (
+    <div className="mt-4 text-center">
+      <BigButton variant="sky" onClick={play} disabled={status === "loading"}>
+        {status === "loading" ? "⏳ Loading voice…" : "🔊 Play Narration"}
+      </BigButton>
+      {status === "error" && <p className="mt-2 font-semibold text-destructive">{error}</p>}
     </div>
   );
 }
