@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlayIndexRouteImport } from './routes/play.index'
+import { Route as PlayCodeRouteImport } from './routes/play.$code'
+import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
+import { Route as TeacherDashboardIdRouteImport } from './routes/teacher.dashboard.$id'
+import { Route as TeacherLessonIdRouteImport } from './routes/teacher.lesson.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayIndexRoute = PlayIndexRouteImport.update({
+  id: '/play/',
+  path: '/play/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayCodeRoute = PlayCodeRouteImport.update({
+  id: '/play/$code',
+  path: '/play/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherIndexRoute = TeacherIndexRouteImport.update({
+  id: '/teacher/',
+  path: '/teacher/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherDashboardIdRoute = TeacherDashboardIdRouteImport.update({
+  id: '/teacher/dashboard/$id',
+  path: '/teacher/dashboard/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeacherLessonIdRoute = TeacherLessonIdRouteImport.update({
+  id: '/teacher/lesson/$id',
+  path: '/teacher/lesson/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/play/': typeof PlayIndexRoute
+  '/teacher/': typeof TeacherIndexRoute
+  '/teacher/dashboard/$id': typeof TeacherDashboardIdRoute
+  '/teacher/lesson/$id': typeof TeacherLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/play': typeof PlayIndexRoute
+  '/teacher': typeof TeacherIndexRoute
+  '/teacher/dashboard/$id': typeof TeacherDashboardIdRoute
+  '/teacher/lesson/$id': typeof TeacherLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/play/$code': typeof PlayCodeRoute
+  '/play/': typeof PlayIndexRoute
+  '/teacher/': typeof TeacherIndexRoute
+  '/teacher/dashboard/$id': typeof TeacherDashboardIdRoute
+  '/teacher/lesson/$id': typeof TeacherLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/play/$code'
+    | '/play/'
+    | '/teacher/'
+    | '/teacher/dashboard/$id'
+    | '/teacher/lesson/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/play/$code'
+    | '/play'
+    | '/teacher'
+    | '/teacher/dashboard/$id'
+    | '/teacher/lesson/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/play/$code'
+    | '/play/'
+    | '/teacher/'
+    | '/teacher/dashboard/$id'
+    | '/teacher/lesson/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PlayCodeRoute: typeof PlayCodeRoute
+  PlayIndexRoute: typeof PlayIndexRoute
+  TeacherIndexRoute: typeof TeacherIndexRoute
+  TeacherDashboardIdRoute: typeof TeacherDashboardIdRoute
+  TeacherLessonIdRoute: typeof TeacherLessonIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/': {
+      id: '/play/'
+      path: '/play'
+      fullPath: '/play/'
+      preLoaderRoute: typeof PlayIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/$code': {
+      id: '/play/$code'
+      path: '/play/$code'
+      fullPath: '/play/$code'
+      preLoaderRoute: typeof PlayCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teacher/': {
+      id: '/teacher/'
+      path: '/teacher'
+      fullPath: '/teacher/'
+      preLoaderRoute: typeof TeacherIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teacher/dashboard/$id': {
+      id: '/teacher/dashboard/$id'
+      path: '/teacher/dashboard/$id'
+      fullPath: '/teacher/dashboard/$id'
+      preLoaderRoute: typeof TeacherDashboardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teacher/lesson/$id': {
+      id: '/teacher/lesson/$id'
+      path: '/teacher/lesson/$id'
+      fullPath: '/teacher/lesson/$id'
+      preLoaderRoute: typeof TeacherLessonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PlayCodeRoute: PlayCodeRoute,
+  PlayIndexRoute: PlayIndexRoute,
+  TeacherIndexRoute: TeacherIndexRoute,
+  TeacherDashboardIdRoute: TeacherDashboardIdRoute,
+  TeacherLessonIdRoute: TeacherLessonIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
