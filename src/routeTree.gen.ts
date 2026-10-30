@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGemmaProxyRouteImport } from './routes/api/gemma-proxy'
 import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as PlayCodeRouteImport } from './routes/play.$code'
@@ -20,6 +21,11 @@ import { Route as TeacherLessonIdRouteImport } from './routes/teacher.lesson.$id
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGemmaProxyRoute = ApiGemmaProxyRouteImport.update({
+  id: '/api/gemma-proxy',
+  path: '/api/gemma-proxy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTtsRoute = ApiTtsRouteImport.update({
@@ -55,6 +61,7 @@ const TeacherLessonIdRoute = TeacherLessonIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/gemma-proxy': typeof ApiGemmaProxyRoute
   '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play/': typeof PlayIndexRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/gemma-proxy': typeof ApiGemmaProxyRoute
   '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play': typeof PlayIndexRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/gemma-proxy': typeof ApiGemmaProxyRoute
   '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play/': typeof PlayIndexRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api/gemma-proxy'
     | '/api/tts'
     | '/play/$code'
     | '/play/'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/gemma-proxy'
     | '/api/tts'
     | '/play/$code'
     | '/play'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/api/gemma-proxy'
     | '/api/tts'
     | '/play/$code'
     | '/play/'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiGemmaProxyRoute: typeof ApiGemmaProxyRoute
   ApiTtsRoute: typeof ApiTtsRoute
   PlayCodeRoute: typeof PlayCodeRoute
   PlayIndexRoute: typeof PlayIndexRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gemma-proxy': {
+      id: '/api/gemma-proxy'
+      path: '/api/gemma-proxy'
+      fullPath: '/api/gemma-proxy'
+      preLoaderRoute: typeof ApiGemmaProxyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/tts': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiGemmaProxyRoute: ApiGemmaProxyRoute,
   ApiTtsRoute: ApiTtsRoute,
   PlayCodeRoute: PlayCodeRoute,
   PlayIndexRoute: PlayIndexRoute,
