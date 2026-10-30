@@ -133,6 +133,54 @@ function TeacherUpload() {
         </BigButton>
         {!file && <p className="-mt-3 text-center text-sm text-muted-foreground">Upload a worksheet or use the sample to continue.</p>}
       </div>
+      <GemmaTest />
     </TeacherShell>
+  );
+}
+
+function GemmaTest() {
+  const [message, setMessage] = useState("Create one simple grade 2 math question about addition.");
+  const [loading, setLoading] = useState(false);
+  const [reply, setReply] = useState("");
+  const [error, setError] = useState("");
+
+  const send = async () => {
+    if (loading) return;
+    const text = message.trim();
+    if (!text) return setError("Please type a message first");
+    setLoading(true); setError(""); setReply("");
+    try {
+      const res = await fetch("/api/gemma-proxy", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ message: text }),
+        signal: AbortSignal.timeout(40_000),
+      });
+      const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
+      if (!res.ok || typeof data.reply !== "string") throw new Error(data.error ?? `Request failed (${res.status})`);
+      setReply(data.reply);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section className="mt-10 rounded-3xl bg-card p-6 shadow-soft">
+      <h2 className="text-2xl font-bold">Test Gemma Connection</h2>
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        maxLength={1000}
+        rows={3}
+        className="mt-4 w-full rounded-2xl border-2 border-border bg-background p-3"
+      />
+      <BigButton className="mt-3" onClick={send} disabled={loading}>
+        {loading ? "⏳ Waiting for Gemma…" : "Send to Gemma"}
+      </BigButton>
+      {error && <p className="mt-3 font-semibold text-destructive">{error}</p>}
+      {reply && <p className="mt-3 whitespace-pre-wrap rounded-2xl bg-muted p-4">{reply}</p>}
+    </section>
   );
 }
