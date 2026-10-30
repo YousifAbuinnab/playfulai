@@ -127,6 +127,7 @@ function Story({ lesson, player }: { lesson: StoryLesson; player: Player }) {
         <div key={chapter.id} className="animate-pop mt-6 rounded-3xl bg-card p-6 shadow-soft">
           <div className="animate-float text-center text-7xl">{["🦊", "🦉", "🐻"][ch % 3]}</div>
           <p className="mt-4 text-xl leading-relaxed sm:text-2xl">{chapter.narration_text}</p>
+          <NarrationButton key={chapter.id} text={chapter.narration_text} existing={audioUrl(chapter.narration_audio)} />
           <BigButton className="mt-6 w-full" onClick={() => setPhase("quiz")}>I'm ready! →</BigButton>
         </div>
       ) : (

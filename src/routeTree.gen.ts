@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as PlayIndexRouteImport } from './routes/play.index'
 import { Route as PlayCodeRouteImport } from './routes/play.$code'
 import { Route as TeacherIndexRouteImport } from './routes/teacher.index'
@@ -19,6 +20,11 @@ import { Route as TeacherLessonIdRouteImport } from './routes/teacher.lesson.$id
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTtsRoute = ApiTtsRouteImport.update({
+  id: '/api/tts',
+  path: '/api/tts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayIndexRoute = PlayIndexRouteImport.update({
@@ -49,6 +55,7 @@ const TeacherLessonIdRoute = TeacherLessonIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play/': typeof PlayIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play': typeof PlayIndexRoute
   '/teacher': typeof TeacherIndexRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/tts': typeof ApiTtsRoute
   '/play/$code': typeof PlayCodeRoute
   '/play/': typeof PlayIndexRoute
   '/teacher/': typeof TeacherIndexRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api/tts'
     | '/play/$code'
     | '/play/'
     | '/teacher/'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api/tts'
     | '/play/$code'
     | '/play'
     | '/teacher'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/api/tts'
     | '/play/$code'
     | '/play/'
     | '/teacher/'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiTtsRoute: typeof ApiTtsRoute
   PlayCodeRoute: typeof PlayCodeRoute
   PlayIndexRoute: typeof PlayIndexRoute
   TeacherIndexRoute: typeof TeacherIndexRoute
@@ -115,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tts': {
+      id: '/api/tts'
+      path: '/api/tts'
+      fullPath: '/api/tts'
+      preLoaderRoute: typeof ApiTtsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/': {
@@ -157,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiTtsRoute: ApiTtsRoute,
   PlayCodeRoute: PlayCodeRoute,
   PlayIndexRoute: PlayIndexRoute,
   TeacherIndexRoute: TeacherIndexRoute,
