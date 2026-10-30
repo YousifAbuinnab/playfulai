@@ -91,7 +91,7 @@ function Quiz({ task, onDone }: { task: Task; onDone: (firstTry: boolean) => voi
       {solved && (
         <div className="animate-pop mt-5 text-center">
           <p className="text-xl font-semibold text-success">🎉 {task.explanation}</p>
-          <BigButton variant="leaf" className="mt-4" onClick={() => onDone(wrong.length === 0)}>Next →</BigButton>
+          <BigButton variant="leaf" className="mt-4" onClick={() => onDone(!missed)}>Next →</BigButton>
         </div>
       )}
     </div>
