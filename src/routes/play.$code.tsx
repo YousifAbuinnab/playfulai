@@ -15,10 +15,10 @@ export const Route = createFileRoute("/play/$code")({
       { property: "og:description", content: "Play your lesson, answer questions and earn stars." },
     ],
   }),
-  component: Player,
+  component: PlayerPage,
 });
 
-function Player() {
+function PlayerPage() {
   const { code } = Route.useParams();
   const [state, setState] = useState<{ lesson: Lesson | undefined; player: Player } | null>(null);
   useEffect(() => setState({ lesson: lessonForCode(code), player: getPlayer() }), [code]);
