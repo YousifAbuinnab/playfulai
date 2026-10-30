@@ -174,6 +174,7 @@ function Game({ lesson, player }: { lesson: GameLesson; player: Player }) {
         {lesson.levels.map((l, i) => {
           const unlocked = i <= levelStars.length;
           const complete = i < levelStars.length;
+          const s = levelStars[i] ?? 0;
           return (
             <div key={l.id} className={cn("flex flex-col items-center", i % 2 ? "sm:translate-x-24" : "sm:-translate-x-24")}>
               <button
@@ -187,7 +188,7 @@ function Game({ lesson, player }: { lesson: GameLesson; player: Player }) {
                 {unlocked ? icons[i % 3] : "🔒"}
               </button>
               <p className="mt-2 font-display text-xl font-bold">{l.title}</p>
-              <p className="text-2xl">{complete ? "⭐".repeat(levelStars[i]) + "☆".repeat(3 - levelStars[i]) : "☆☆☆"}</p>
+              <p className="text-2xl">{complete ? "⭐".repeat(s) + "☆".repeat(3 - s) : "☆☆☆"}</p>
             </div>
           );
         })}
